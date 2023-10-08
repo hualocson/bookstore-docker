@@ -1,0 +1,25 @@
+version: "3"
+name: "bookstore"
+services:
+  bookstore-fe:
+    container_name: frontend
+    build:
+      context: ../client
+    environment:
+      - PORT=3000
+    links:
+      - bookstore-be
+
+  bookstore-be:
+    container_name: backend
+    build:
+      context: ../server
+    env_file:
+      ../server/.env
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.15-alpine
+    depends_on:
+      - bookstore-fe
+      - bookstore-be

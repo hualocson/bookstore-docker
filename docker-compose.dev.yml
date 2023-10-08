@@ -1,0 +1,43 @@
+version: "3"
+services:
+  bookstore-fe:
+    build:
+      context: ../client
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    volumes:
+      - ../client:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - APP_ENV=development
+
+  bookstore-be:
+    build:
+      context: ../server
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+        SERVER_PORT: 8080
+    volumes:
+      - ../server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - APP_ENV=development
+      - SERVER_PORT=8080
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/dev/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+networks:
+  default:
+    external: true
+    name: admin-bookstore_default
